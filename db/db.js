@@ -1,9 +1,6 @@
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 
-const  {neon} = require("@neondatabase/serverless")
-
-const {db} = require('drizzle-orm')
-const { drizzle } = require("drizzle-orm/neon-http")
-
-const sql = neon(process.env.DATABASE_URL)
-
-module.exports = { db:drizzle(sql) }
+const sql = neon("postgresql://neondb_owner:npg_eX3EnDoWdFv1@ep-young-art-a4w9bmtm-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require")
+const db = drizzle({ client: sql });
+export default db

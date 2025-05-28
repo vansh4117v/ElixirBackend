@@ -1,8 +1,8 @@
-const express = require("express")
-const userRouter = require("./user")
+import express from "express";
+import userRouter from "./user.js"
 const router = express.Router()
-
+import {} from 'dotenv/config'
 router.use('/user',userRouter)
 
 
-module.exports = router;
+export default router;

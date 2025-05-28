@@ -1,0 +1,1 @@
+ALTER TABLE "userDetails" ADD COLUMN "userId" uuid NOT NULL;

@@ -1,16 +1,19 @@
-const express = require("express");
-const cors = require("cors")
-
-
+import express from "express";
+import cors from "cors"
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+import mainRouter from "./router/index.js"
 const app = express();
 
-const bodyParser = require("body-parser");
-const mainRouter = require("./router/index")
+
+
+
 
 
 
 app.use(bodyParser.json())
 app.use(cors())
+app.use(cookieParser())
 app.use("/api/v1",mainRouter)
 
 app.listen(3000,()=>{

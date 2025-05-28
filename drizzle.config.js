@@ -1,6 +1,8 @@
 /**@type {import("drizzle-kit").Config} */
 
 export default  {
+
+    out:"./drizzle",
      dialect: "postgresql",
     schema: "./db/schema.js",
     dbCredentials:{
@@ -8,7 +10,11 @@ export default  {
     },
     studio:{
       port:4980
-    }
+    },
+    migrations: {
+    table: 'journal', 
+    schema: 'drizzle', 
+  },
   };
  
 
