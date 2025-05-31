@@ -1,0 +1,101 @@
+{
+  "id": "27fa8943-9120-4db3-bbde-b3dcb9d62b28",
+  "prevId": "a8a2244b-b7bb-4b0b-9eae-176b376e7dba",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.userDetails": {
+      "name": "userDetails",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "branch": {
+          "name": "branch",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "collegeMail": {
+          "name": "collegeMail",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "year": {
+          "name": "year",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "techStack": {
+          "name": "techStack",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refreshToken": {
+          "name": "refreshToken",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isClubHead": {
+          "name": "isClubHead",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "userDetails_collegeMail_unique": {
+          "name": "userDetails_collegeMail_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "collegeMail"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

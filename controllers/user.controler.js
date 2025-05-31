@@ -7,7 +7,7 @@ import {signUpSchema, signinSchema} from "../zod/vaildation.js"
 import bcrypt from 'bcrypt';
 import db from "../db/db.js"
 import asyncHandler from "../utils/asyncHandler.js"
-import { uuid } from "drizzle-orm/pg-core";
+
 import uuid4 from "uuid4";
 
 
@@ -74,8 +74,8 @@ import uuid4 from "uuid4";
                         const {accessToken, refreshToken} =  await AccessRefreshTokenGenerator(userId)
                         
                        return res
-                        .cookie(refreshToken)
-                        .cookie(accessToken).json({msg:"User created Successfully",refreshToken,accessToken})
+                        .cookie("refreshToken",refreshToken,options)
+                        .cookie("accsessToken",accessToken,options).json({msg:"User created Successfully",refreshToken,accessToken})
                     }
                     
                     } catch (error) {

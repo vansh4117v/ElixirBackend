@@ -1,0 +1,1 @@
+ALTER TABLE "userDetails" ADD COLUMN "isClubHead" boolean DEFAULT false NOT NULL;

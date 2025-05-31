@@ -1,4 +1,4 @@
-import { uuid } from "drizzle-orm/pg-core";
+import { boolean, uuid } from "drizzle-orm/pg-core";
 import { serial } from "drizzle-orm/pg-core";
 import { pgTable, varchar } from "drizzle-orm/pg-core";
 
@@ -14,4 +14,5 @@ export const userDetails = pgTable("userDetails",
         year:varchar('year').notNull(),
         techStack:varchar('techStack'),
         refreshToken:varchar('refreshToken'),
-    })
+        isClubeHead:boolean("isClubHead").default(false).notNull()
+    })                                  
