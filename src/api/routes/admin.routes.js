@@ -10,6 +10,7 @@ router.get("/users", jwtVerify, isAdmin, getAllUser);
 router.get("/profile", jwtVerify, isAdmin, Profile);
 router.get("/userPromotion",jwtVerify,isAdmin,userPromotion);
 // /event CRUD
+
 // /mentor CRUD
 // /user promotion
 

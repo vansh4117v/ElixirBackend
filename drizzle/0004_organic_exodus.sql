@@ -1,0 +1,1 @@
+ALTER TABLE "eventDetails" ADD COLUMN "eventId" uuid NOT NULL;

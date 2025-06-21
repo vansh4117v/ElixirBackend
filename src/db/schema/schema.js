@@ -18,6 +18,7 @@ export const userDetails = pgTable("userDetails", {
 });
 
 export const eventDetails = pgTable("eventDetails",{
+  eventId:uuid().notNull(),
   name:varchar("name").notNull(),
   startDate:date("startDate").notNull(),
   endDate:date("endDate").notNull(),

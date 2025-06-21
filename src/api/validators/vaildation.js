@@ -14,4 +14,17 @@ const signinSchema = zod.object({
   password: zod.string().min(6),
 });
 
-export { signUpSchema, signinSchema };
+const eventSchema = zod.object({
+    name:zod.string().min(3),
+    startDate:zod.date(),
+    endDate:zod.date(),
+    imageUrl:zod.string(),
+    description:zod.string(),
+    registrationLink:zod.string(),
+    documentLink:zod.string(),
+    clubName:zod.string(),
+    ticketPrice:zod.number(),
+    location:zod.string(),
+})
+
+export { signUpSchema, signinSchema,eventSchema };

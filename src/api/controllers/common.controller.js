@@ -1,7 +1,7 @@
 
 import { eq } from "drizzle-orm";
 import db from "../../db/db";
-import { userDetails } from "../../db/schema/schema";
+import { eventDetails, userDetails } from "../../db/schema/schema";
 import { signUpSchema } from "../validators/vaildation";
 
 //Profile/data of admin
@@ -41,8 +41,19 @@ const DeleteUser = async (req,res) =>{
 
     return res.status(200).json({msg:"User deleted succesfully"})
 }
+
+const getAllEvent = async(req,res) =>{
+    const events = await db.select().from(eventDetails) 
+    if(!events){
+      return res.status(401).json({ msg: "Something went wrong data not found" });
+    }
+    res.status(200).json({ msg: "All user details", users: result});
+}
+
+
 export {
     Profile,
     UpdateUser,
-    DeleteUser
+    DeleteUser,
+    getAllEvent
 }

@@ -1,5 +1,6 @@
 import express from "express";
 import { SignUpController, SignInController, refreshToken } from "../controllers/user.controller.js";
+import { getAllEvent } from "../controllers/common.controller.js";
 
 const router = express.Router();
 
@@ -7,6 +8,10 @@ const router = express.Router();
 router.post("/signup", SignUpController);
 router.post("/signin", SignInController);
 router.post("/refresh-token", refreshToken);
+
+//Getting all event
+
+router.get("/event",getAllEvent)
 
 // /signup
 // /event, /event/:id, 
