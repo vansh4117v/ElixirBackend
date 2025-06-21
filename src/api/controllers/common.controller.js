@@ -47,13 +47,22 @@ const getAllEvent = async(req,res) =>{
     if(!events){
       return res.status(401).json({ msg: "Something went wrong data not found" });
     }
-    res.status(200).json({ msg: "All user details", users: result});
+    res.status(200).json({ msg: "All user details", events: result});
 }
 
+const getEvent = async(req,res) =>{
+  const eventId = req.params.id
+  const [event] = await db.select().from(eventDetails).where(eq(eventDetails.eventId,eventId))
+  if(!event){
+    return res.status(401).json({ msg: "Something went wrong data not found" });
+  }
+  res.status(200).json({ msg: "All user details", event: result});
+}
 
 export {
     Profile,
     UpdateUser,
     DeleteUser,
-    getAllEvent
+    getAllEvent,
+    getEvent
 }

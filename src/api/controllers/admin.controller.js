@@ -37,4 +37,67 @@ const userPromotion = async (req,res) =>{
   return res.status(200).json({msg:"User Promoted successfully"})
 } 
 
-export { getAllUser, Profile,userPromotion };
+
+const updateEvent = async(req,res) =>{
+    const { userId } = req.user
+    const body = req.body
+    const eventId = req.params.id
+    const {success} = eventSchema.safeParse(body)
+
+    if(!success){
+        return res.json({ msg: "Wrong input during creating event" });
+    }
+    try {
+    // Check if event already exists
+    const [existingEvent] = await db.select().from(eventDetails).where(and(eq(eventDetails.eventId,eventId)));
+
+    if (!existingEvent) {
+      return res.status(401).json({ msg: "Event with name not exists" });
+    }
+
+    const result = await db
+                    .update(eventDetails)
+                    .set(body)
+                    .where(and(eq(eventDetails.eventId,eventId),eq(eventDetails.createdBy,userId)))
+                    .returning()
+
+    if(!result){
+        return res.status(502).json({msg:"User not updated, Something went wrong"})
+    }
+
+    return res.status(200).json({msg:"User updated succesfully",updatedEvent:result[0]})
+
+    }catch(e){
+        console.log("Error from updateEvent",e)
+        return res.status(401).json({msg:"Error while updateing event"})
+
+    }
+    
+}
+
+
+const DeleteEvent = async(req,res) =>{
+    const {userId} = req.user
+    const eventId = req.params.id
+
+    // Check if event already exists
+    try{const [existingEvent] = await db.select().from(eventDetails).where(and(eq(eventDetails.eventId,eventId)));
+
+    if (!existingEvent) {
+      return res.status(401).json({ msg: "Event not exists" });
+    }
+    
+    const result = await db.delete(eventDetails).where(and(eq(eventDetails.eventId,eventId)))
+    if(!result){
+        return res.status(502).json({msg:"Event not deleted, Something went wrong"})
+    }
+
+    return res.status(200).json({msg:"Event deleted succesfully"})
+    
+    }catch(error){
+        console.log("Error from DeleteEvent",error)
+        return res.status(502).json({msg:"Event not deleted, Something went wrong"})
+    }
+}
+
+export { getAllUser, userPromotion, updateEvent,DeleteEvent };
