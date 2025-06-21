@@ -39,11 +39,11 @@ export const isAdmin = (req, res, next) => {
     return res.status(401).json({ error: "User not authenticated" });
   }
 
-  if (req.user.collegeMail === process.env.ADMIN_MAIL) {
+  if (req.user.roles === "admin") {
     req.isAdmin = true;
     next();
   } else {
-    return res.status(403).json({ error: "User is not an admin" });
+    return res.status(403).json({ error: "User is not an admin" } );
   }
 };
 
@@ -53,7 +53,8 @@ export const isClubHead = (req, res, next) => {
     return res.status(401).json({ error: "User not authenticated" });
   }
 
-  if (req.user.isClubHead) {
+  if (req.user.roles === "club") {
+    req.isClubHead = true;
     next();
   } else {
     return res.status(403).json({ error: "User is not a club head" });
