@@ -6,7 +6,7 @@ import { signUpSchema, signinSchema } from "../validators/vaildation.js";
 import bcrypt from "bcrypt";
 import db from "../../db/db.js";
 import asyncHandler from "../../utils/asyncHandler.js";
-
+import jwt from "jsonwebtoken"
 import uuid4 from "uuid4";
 
 //SignUp function
@@ -18,7 +18,8 @@ const SignUpController = asyncHandler(async (req, res) => {
   // return res
 
   const body = req.body;
-  const { sucess } = signUpSchema.safeParse(body);
+  const sucess  = signUpSchema.safeParse(body);
+  console.log(sucess)
   if (!{ sucess }) {
     return res.json({ msg: "Wrong input during signup" });
   }
@@ -43,7 +44,8 @@ const SignUpController = asyncHandler(async (req, res) => {
     const result = await db
       .insert(userDetails)
       .values({
-        name: body.name,
+        firstName: body.firstName,
+        lastName:body.lastName,
         password: hashPassword,
         Branch: body.Branch,
         collegeMail: body.collegeMail,
@@ -151,16 +153,16 @@ const refreshToken = async (req, res) => {
     if (user[0].refreshToken !== newRefreshToken) {
       throw new Error({ msg: "Refresh Token is expired or used" });
     }
+    // console.log(user[0].userId)
+    const { accessToken, refreshToken } = await AccessRefreshTokenGenerator(user[0].userId);
 
-    const { accesToken, refreshToken } = AccessRefreshTokenGenerator(user[0].userId);
-
-    res
-      .status(200)
+    console.log(accessToken, refreshToken)
+      res.status(200)
       .cookie("refreshToken", refreshToken, options)
       .cookie("accessToken", accessToken, options)
-      .json({ msg: "User signin Successfully", refreshToken: refreshToken, accesToken: accesToken });
+      .json({ msg: "User signin Successfully", refreshToken: refreshToken, accesToken: accessToken });
   } catch (error) {
-    res.stauts(200).json({ msg: "Error during RefreshToken" });
+    res.status(401).json({ msg: "Error during RefreshToken" });
     console.error(error);
   }
 };

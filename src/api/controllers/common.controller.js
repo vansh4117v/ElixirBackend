@@ -1,8 +1,8 @@
 
 import { eq } from "drizzle-orm";
-import db from "../../db/db";
-import { userDetails } from "../../db/schema/schema";
-import { signUpSchema } from "../validators/vaildation";
+import db from "../../db/db.js";
+import { eventDetails, userDetails } from "../../db/schema/schema.js";
+import { signUpSchema, updateUserSchema } from "../validators/vaildation.js";
 
 //Profile/data of admin
 const Profile = async (req, res) => {
@@ -17,7 +17,7 @@ const Profile = async (req, res) => {
 const UpdateUser = async(req,res)=>{
     const user = req.user
     const body = req.body
-    const success = signUpSchema.safeParse(body)
+    const success = updateUserSchema.safeParse(body)
     if (!{ success }) {
     return res.json({ msg: "Wrong input during Update" });
   }
@@ -41,8 +41,28 @@ const DeleteUser = async (req,res) =>{
 
     return res.status(200).json({msg:"User deleted succesfully"})
 }
+
+const getAllEvent = async(req,res) =>{
+    const events = await db.select().from(eventDetails) 
+    if(!events){
+      return res.status(401).json({ msg: "Something went wrong data not found" });
+    }
+    res.status(200).json({ msg: "All user details", events: events});
+}
+
+const getEvent = async(req,res) =>{
+  const eventId = req.params.id
+  const [event] = await db.select().from(eventDetails).where(eq(eventDetails.eventId,eventId))
+  if(!event){
+    return res.status(401).json({ msg: "Something went wrong data not found" });
+  }
+  res.status(200).json({ msg: "All user details", event: event});
+}
+
 export {
     Profile,
     UpdateUser,
-    DeleteUser
+    DeleteUser,
+    getAllEvent,
+    getEvent
 }

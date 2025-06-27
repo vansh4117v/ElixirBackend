@@ -14,7 +14,7 @@ const AccessRefreshTokenGenerator = async (userId) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "10d",
       },
     );
 
@@ -24,7 +24,7 @@ const AccessRefreshTokenGenerator = async (userId) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "2d",
+        expiresIn: "60d",
       },
     );
     // console.log(accessToken)
