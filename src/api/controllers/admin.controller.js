@@ -1,7 +1,8 @@
-import { eq, not } from "drizzle-orm";
+import { and, eq, not } from "drizzle-orm";
 import db from "../../db/db.js";
-import { userDetails } from "../../db/schema/schema.js";
+import { eventDetails, userDetails } from "../../db/schema/schema.js";
 import { isAdmin } from "../middlewares/auth.middleware.js";
+import { updateEventSchema } from "../validators/vaildation.js";
 
 //Getting list of user by admin
 const getAllUser = async (req, res) => {
@@ -22,9 +23,9 @@ const getAllUser = async (req, res) => {
 const userPromotion = async (req,res) =>{
   // const user = req.user
   const {roles} = req.body
-  const idToPromote = req.query
+  const idToPromote = req.params.id
 
-  if(!(roles==="admin" || roles === "club" || roles === "user" || roles === "reprsentative")){
+  if(!( roles === "admin" || roles === "club" || roles === "user" || roles === "reprsentative")){
     return res.stauts(502).json({msg:"Invaild fields"})
   }
   const result = await db.update(userDetails).set({roles:roles}).where(eq(userDetails.userId,idToPromote)).returning()
@@ -35,37 +36,37 @@ const userPromotion = async (req,res) =>{
   }
 
   return res.status(200).json({msg:"User Promoted successfully"})
-} 
+}
 
 
 const updateEvent = async(req,res) =>{
     const { userId } = req.user
     const body = req.body
     const eventId = req.params.id
-    const {success} = eventSchema.safeParse(body)
+    const {success} = updateEventSchema.safeParse(body)
 
     if(!success){
-        return res.json({ msg: "Wrong input during creating event" });
+        return res.status(403).json({ msg: "Wrong input during creating event" });
     }
     try {
     // Check if event already exists
-    const [existingEvent] = await db.select().from(eventDetails).where(and(eq(eventDetails.eventId,eventId)));
+    const [existingEvent] = await db.select().from(eventDetails).where(eq(eventDetails.eventId,eventId));
 
     if (!existingEvent) {
       return res.status(401).json({ msg: "Event with name not exists" });
     }
 
-    const result = await db
+    const [ result ] = await db
                     .update(eventDetails)
                     .set(body)
-                    .where(and(eq(eventDetails.eventId,eventId),eq(eventDetails.createdBy,userId)))
+                    .where(eq(eventDetails.eventId,eventId))
                     .returning()
 
     if(!result){
         return res.status(502).json({msg:"User not updated, Something went wrong"})
     }
-
-    return res.status(200).json({msg:"User updated succesfully",updatedEvent:result[0]})
+    console.log(result)
+    return res.status(200).json({msg:"User updated succesfully",updatedEvent:result})
 
     }catch(e){
         console.log("Error from updateEvent",e)
@@ -81,13 +82,13 @@ const DeleteEvent = async(req,res) =>{
     const eventId = req.params.id
 
     // Check if event already exists
-    try{const [existingEvent] = await db.select().from(eventDetails).where(and(eq(eventDetails.eventId,eventId)));
+    try{const [existingEvent] = await db.select().from(eventDetails).where(eq(eventDetails.eventId,eventId));
 
     if (!existingEvent) {
       return res.status(401).json({ msg: "Event not exists" });
     }
     
-    const result = await db.delete(eventDetails).where(and(eq(eventDetails.eventId,eventId)))
+    const result  = await db.delete(eventDetails).where(eq(eventDetails.eventId,eventId))
     if(!result){
         return res.status(502).json({msg:"Event not deleted, Something went wrong"})
     }

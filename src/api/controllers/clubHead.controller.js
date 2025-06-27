@@ -1,21 +1,21 @@
-import { and, eq } from "drizzle-orm";
-import db from "../../db/db";
-import { eventDetails } from "../../db/schema/schema";
-import { eventSchema } from "../validators/vaildation"
+import { and, eq, not } from "drizzle-orm";
+import db from "../../db/db.js";
+import { eventDetails, userDetails } from "../../db/schema/schema.js";
+import { eventSchema, updateEventSchema } from "../validators/vaildation.js"
 import uuid4 from "uuid4";
 
 export const createEvent = async(req,res) =>{
     const body = req.body
     const { userId } = req.user
-    const {success} = eventSchema.safeParse(body)
-
+    const { success } = eventSchema.safeParse(body)
+    console.log(success)
     if(!success){
-        return res.json({ msg: "Wrong input during creating event" });
+        return res.status(403).json({ msg: "Wrong input during creating event" });
     }
 
     try {
     // Check if event already exists
-    const [existingEvent] = await db.select().from(userDetails).where(eq(eventDetails.name, body.name));
+    const [existingEvent] = await db.select().from(eventDetails).where(eq(eventDetails.name, body.name));
 
     if (existingEvent) {
       return res.status(401).json({ msg: "Event with name already exists" });
@@ -39,9 +39,11 @@ export const createEvent = async(req,res) =>{
               ticketPrice:body.ticketPrice,
               location:body.location,
               createdBy:userId
-        }).returning({registrationLink,eventId})
+        }).returning({registrationLink:eventDetails.registrationLink,eventId:eventDetails
+            .eventId})
 
-        const eventId = result[0].eventId
+        const { eventId, registrationLink } = result[0]
+        
         if (!eventId) {
          return res.status(401).json({ msg: "Event not created" });
             } 
@@ -51,6 +53,7 @@ export const createEvent = async(req,res) =>{
 
     
     }catch(e){
+        console.error(e)
         return res.status(501).json("Error while creating event")
     }
 }
@@ -60,11 +63,11 @@ export const myEvents = async(req,res) =>{
 
     const result = await db.select().from(eventDetails).where(eq(eventDetails.createdBy,userId))
     if(![result]){
-        return res.stauts(401).json({msg:"no event found"})
+        return res.status(401).json({msg:"no event found"})
 
     }
     else{
-        return res.stauts(200).json({msg:"Your Events ",events:result})
+        return res.status(200).json({msg:"Your Events ",events:result})
     }
 }
 
@@ -72,10 +75,10 @@ export const updateEvent = async(req,res) =>{
     const { userId } = req.user
     const body = req.body
     const eventId = req.params.id
-    const {success} = eventSchema.safeParse(body)
-
+    const  { success } = updateEventSchema.safeParse(body)
+    console.log(success)
     if(!success){
-        return res.json({ msg: "Wrong input during creating event" });
+        return res.status(403).json({ msg: "Wrong input during update event" });
     }
     try {
     // Check if event already exists
@@ -127,4 +130,24 @@ export const DeleteEvent = async(req,res) =>{
         console.log("Error from DeleteEvent",error)
         return res.status(502).json({msg:"Event not deleted, Something went wrong"})
     }
+}
+
+
+export const userPromotionForClubHead = async (req,res) =>{
+  // const user = req.user
+  const {roles} = req.body
+  const idToPromote = req.params.id
+
+  if(!(  roles === "club" || roles === "reprsentative")){
+    return res.stauts(502).json({msg:"Invaild fields"})
+  }
+  
+  const [ result ] = await db.update(userDetails).set({roles:roles}).where(and(eq(userDetails.userId,idToPromote),not(eq(userDetails.roles,"admin")))).returning()
+  
+  
+  if(!result){
+    return res.status(501).json({msg:"Error Something went wrong"})
+  }
+
+  return res.status(200).json({msg:"User Promoted successfully"})
 }
