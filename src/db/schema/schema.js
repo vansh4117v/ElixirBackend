@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, date, integer, numeric, uuid } from "drizzle-orm/pg-core";
+import { date, integer, uuid } from "drizzle-orm/pg-core";
 import { serial } from "drizzle-orm/pg-core";
 import { pgTable, varchar } from "drizzle-orm/pg-core";
 
@@ -31,6 +31,17 @@ export const eventDetails = pgTable("eventDetails",{
   location:varchar("location").notNull(),
   createdBy:varchar("createdBy").notNull()
 })
+
+export const mentorDetails = pgTable("mentorDetails", {
+  id: serial().primaryKey(),
+  mentorId: uuid("mentorId").notNull(),
+  name: varchar("name").notNull(),
+  image: varchar("image").notNull(),
+  discord: varchar("discord"),
+  linkedIn: varchar("linkedIn").notNull(),
+  techStack: varchar("techStack").notNull(),
+  bannerKeywords: varchar("bannerKeywords"),
+});
 
 export const usersRelations = relations(userDetails, ({ many }) => ({
 	eventDetails: many(eventDetails),
