@@ -33,8 +33,7 @@ export const eventDetails = pgTable("eventDetails",{
 })
 
 export const mentorDetails = pgTable("mentorDetails", {
-  id: serial().primaryKey(),
-  mentorId: uuid("mentorId").notNull(),
+  id: uuid("id").primaryKey().notNull(),
   name: varchar("name").notNull(),
   image: varchar("image").notNull(),
   discord: varchar("discord"),

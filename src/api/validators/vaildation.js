@@ -50,7 +50,7 @@ const updateUserSchema = zod.object({
   techStack: zod.string().optional(),
 });
 
-export const createMentorSchema = zod.object({
+const createMentorSchema = zod.object({
   name: zod.string({ required_error: "Name is required" }).min(1, "Name must not be empty").trim(),
   image: zod.string({ required_error: "Image path is required" }).min(1, "Image must not be empty").trim(),
   discord: zod.string().min(1, "Discord username must not be empty").trim().optional(),
@@ -59,7 +59,7 @@ export const createMentorSchema = zod.object({
   bannerKeywords: zod.string().min(1, "Banner keywords must not be empty").trim().optional(),
 });
 
-export const updateMentorSchema = zod.object({
+const updateMentorSchema = zod.object({
   name: zod.string().min(1, "Name cannot be empty").trim().optional(),
   image: zod.string().min(1, "Image path cannot be empty").trim().optional(),
   discord: zod.string().min(1, "Discord cannot be empty").trim().optional(),
@@ -68,4 +68,4 @@ export const updateMentorSchema = zod.object({
   bannerKeywords: zod.string().min(1, "Banner keywords cannot be empty").trim().optional(),
 });
 
-export { signUpSchema, signinSchema, eventSchema, updateEventSchema, updateUserSchema };
+export { signUpSchema, signinSchema, eventSchema, updateEventSchema, updateUserSchema, createMentorSchema, updateMentorSchema };

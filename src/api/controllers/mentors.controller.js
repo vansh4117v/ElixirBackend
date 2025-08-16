@@ -16,7 +16,7 @@ export const getMentorById = async (req, res) => {
       return res.status(400).json({ msg: "Invalid mentor ID format" });
     }
     const { id } = parsed.data;
-    const mentor = await db.select().from(mentorDetails).where(eq(mentorDetails.mentorId, id));
+    const mentor = await db.select().from(mentorDetails).where(eq(mentorDetails.id, id));
     if (mentor.length === 0) {
       return res.status(404).json({ msg: "Mentor not found" });
     }
@@ -45,12 +45,12 @@ export const updateMentor = async (req, res) => {
       return res.status(400).json({ msg: "No valid fields provided for update" });
     }
 
-    const existing = await db.select().from(mentorDetails).where(eq(mentorDetails.mentorId, id));
+    const existing = await db.select().from(mentorDetails).where(eq(mentorDetails.id, id));
     if (existing.length === 0) {
       return res.status(404).json({ msg: "Mentor not found" });
     }
 
-    const updatedMentor = await db.update(mentorDetails).set(updates).where(eq(mentorDetails.mentorId, id)).returning();
+    const updatedMentor = await db.update(mentorDetails).set(updates).where(eq(mentorDetails.id, id)).returning();
 
     if (!updatedMentor.length) {
       return res.status(500).json({ msg: "Failed to update mentor" });
@@ -71,7 +71,7 @@ export const deleteMentor = async (req, res) => {
     }
 
     const { id } = idCheck.data;
-    const deleted = await db.delete(mentorDetails).where(eq(mentorDetails.mentorId, id)).returning();
+    const deleted = await db.delete(mentorDetails).where(eq(mentorDetails.id, id)).returning();
     if (deleted.length === 0) {
       return res.status(404).json({ msg: "Mentor not found" });
     }
@@ -93,7 +93,7 @@ export const createMentor = async (req, res) => {
     const newMentor = await db
       .insert(mentorDetails)
       .values({
-        mentorId: uuid4(),
+        id: uuid4(),
         name: mentorData.name,
         image: mentorData.image,
         discord: mentorData.discord || null,
